@@ -12,11 +12,11 @@ name: "IndexPage",
 <template>
   <el-container style="height: 100%; border: 1px solid #eee">
     <el-aside width="200px" style="background-color: rgb(238, 241, 246);height: 100%">
-    <MyAside :tableData="tableData"></MyAside>
+    <MyAside></MyAside>
     </el-aside>
 
-    <el-container>
-      <el-header style="text-align: right; font-size: 12px;">
+    <el-container style="height: 100%;">
+      <el-header style="text-align: right; font-size: 30px;height:100%;border-bottom:darkgrey 1px solid;">
     <MyHeader></MyHeader>
       </el-header>
 
