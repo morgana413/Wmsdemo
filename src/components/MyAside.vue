@@ -1,6 +1,9 @@
 <script>
 export default {
-name: "MyAside"
+name: "MyAside",
+  props:{
+  isCollapse:Boolean
+  }
 }
 </script>
 
@@ -11,20 +14,22 @@ name: "MyAside"
       active-text-color="#ffd04b"
       style="height: 120vh"
       mode="vertical"
-      default-active="/Home">
+      default-active="/Home"
+      :collapse="isCollapse"
+      :collapse-transition="false">
   <el-menu-item index="/Home">
     <i class="el-icon-s-home"></i>
-    <span>首页</span>
+    <span slot="title">首页</span>
   </el-menu-item>
 
     <el-menu-item index="/1">
       <i class="el-icon-s-flag"></i>
-      <span>导航一</span>
+      <span slot="title">导航一</span>
     </el-menu-item>
 
     <el-menu-item index="/2">
       <i class="el-icon-s-opportunity"></i>
-      <span>导航二</span>
+      <span slot="title">导航二</span>
     </el-menu-item>
   </el-menu>
 </template>

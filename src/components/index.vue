@@ -4,20 +4,40 @@ import MyHeader from "@/components/MyHeader.vue";
 import MyMain from "@/components/MyMain.vue";
 
 export default {
-name: "IndexPage",
-  components: {MyAside,MyHeader,MyMain}
+  name: "IndexPage",
+  components: {MyAside, MyHeader, MyMain},
+  data() {
+    return {
+      isCollapse: false,
+      aside_width: "200px",
+      icon:'el-icon-s-fold'
+    }
+  },
+  methods: {
+    doCollapse() {
+      console.log(1111)
+      this.isCollapse = !this.isCollapse;
+      if (!this.isCollapse) {
+        this.icon='el-icon-s-fold'
+        this.aside_width='200px'//展开
+      }else{//关闭
+        this.icon='el-icon-s-unfold'
+        this.aside_width='64px'
+      }
+    }
+  }
 }
 </script>
 
 <template>
   <el-container style="height: 100%; border: 1px solid #eee">
-    <el-aside width="200px" style="background-color: rgb(238, 241, 246);height: 100%;margin-left:-1px ">
-    <MyAside></MyAside>
+    <el-aside :width="aside_width" style="background-color: rgb(238, 241, 246);height: 100%;margin-left:-1px ">
+    <MyAside :isCollapse ="isCollapse"></MyAside>
     </el-aside>
 
     <el-container style="height: 100%;">
       <el-header style="text-align: right; font-size: 12px;height:100%;border-bottom:darkgrey 1px solid;">
-    <MyHeader></MyHeader>
+    <MyHeader @doCollapse="doCollapse" :icon="icon"></MyHeader>
       </el-header>
 
       <el-main style="height: 100%;">
