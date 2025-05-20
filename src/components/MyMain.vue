@@ -3,21 +3,39 @@ export default {
 name: "MyMain",
   data() {
     return {
-      tableData: []
+      tableData: [],
+      pageNum: 1,
+      pageSize: 2,
+      total: 0
     }
   },
   methods: {
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.pageNum = 1;
+      this.pageSize = val;
+      this.loadPost()
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.pageNum = val;
+      this.loadPost()
+    },
   loadGet() {
     this.$axios.get(this.$httpUrl+'/user/list').then(res =>res.data).then((res) => {
       console.log(res)
     })
   },
     loadPost(){
-    this.$axios.post( this.$httpUrl+'/user/listP',{}).then(res =>res.data).then((res) => {
+    this.$axios.post( this.$httpUrl+'/user/listPageC1',{
+      pageNum:this.pageNum,
+      pageSize:this.pageSize
+    }).then(res =>res.data).then((res) => {
       console.log(res)
       this.tableData = res
       if (res.code==200){
         this.tableData = res.data
+        this.total = res.total
       }else
         alert('获取数据失败')
     })
@@ -31,6 +49,7 @@ name: "MyMain",
 </script>
 
 <template>
+  <div>
   <el-table :data="tableData"
   :header-cell-style="{background: '#2fddfa'}"
             border
@@ -64,6 +83,16 @@ name: "MyMain",
       <el-button size="small" type="danger">删除</el-button>
     </el-table-column>
   </el-table>
+    <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="pageNum"
+        :page-sizes="[1, 2, 3, 5]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total">
+    </el-pagination>
+  </div>
 </template>
 
 <style scoped>
