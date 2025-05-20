@@ -6,10 +6,25 @@ name: "MyMain",
       tableData: [],
       pageNum: 1,
       pageSize: 2,
-      total: 0
+      total: 0,
+      name:'',
+      sex:'',
+      sexs:[{
+        value: '1',
+        label: '男'
+      }, {
+        value: '0',
+        label: '女'
+      }
+      ]
     }
   },
   methods: {
+    resetParam(){
+     this.sex=''
+     this.name=''
+      this.loadPost()
+    },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       this.pageNum = 1;
@@ -29,7 +44,11 @@ name: "MyMain",
     loadPost(){
     this.$axios.post( this.$httpUrl+'/user/listPageC1',{
       pageNum:this.pageNum,
-      pageSize:this.pageSize
+      pageSize:this.pageSize,
+      param:{
+        name:this.name,
+        sex:this.sex
+      }
     }).then(res =>res.data).then((res) => {
       console.log(res)
       this.tableData = res
@@ -50,6 +69,20 @@ name: "MyMain",
 
 <template>
   <div>
+    <div style="margin-bottom: 5px">
+      <el-input v-model="name" placeholder="请输入名字" suffix-icon="el-icon-search" style="width: 200px"
+      @keyup.enter.native="loadPost"></el-input>
+      <el-select style="margin-left: 5px" v-model="sex" filterable placeholder="请选择性别">
+        <el-option
+            v-for="item in sexs"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+        </el-option>
+      </el-select>
+      <el-button type="primary" style="margin-left: 5px" @click="loadPost">查询</el-button>
+      <el-button type="success" @click="resetParam">重置</el-button>
+    </div>
   <el-table :data="tableData"
   :header-cell-style="{background: '#2fddfa'}"
             border
