@@ -11,16 +11,16 @@ name: "IndexPage",
 
 <template>
   <el-container style="height: 100%; border: 1px solid #eee">
-    <el-aside width="200px" style="background-color: rgb(238, 241, 246);height: 100%">
+    <el-aside width="200px" style="background-color: rgb(238, 241, 246);height: 100%;margin-left:-1px ">
     <MyAside></MyAside>
     </el-aside>
 
     <el-container style="height: 100%;">
-      <el-header style="text-align: right; font-size: 30px;height:100%;border-bottom:darkgrey 1px solid;">
+      <el-header style="text-align: right; font-size: 12px;height:100%;border-bottom:darkgrey 1px solid;">
     <MyHeader></MyHeader>
       </el-header>
 
-      <el-main>
+      <el-main style="height: 100%;">
           <MyMain></MyMain>
       </el-main>
     </el-container>

@@ -13,11 +13,11 @@ export default {
 </script>
 
 <template>
-  <div style="display: flex; line-height: 30px;">
+  <div style="display: flex; line-height: 90px;justify-content: space-between; align-items: center">
     <div>
       <i class="el-icon-s-fold" style="font-size: 20px;"></i>
     </div>
-    <div style="display: flex; text-align: center;font-size: 34px;">
+    <div style="flex:1 ; text-align: center;font-size: 34px;padding: 0 20px">
       <span>欢迎来到仓库管理系统</span>
     </div>
   <el-dropdown>
