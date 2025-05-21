@@ -1,6 +1,22 @@
 <script>
 export default {
 name: "MyAside",
+  data(){
+  return {
+    menu:[
+      {
+        menuClick:'Admin',
+        menuName:'管理员管理',
+        menuIcon:'el-icon-s-custom'
+      },{
+        menuClick:'User',
+        menuName:'用户管理',
+        menuIcon:'el-icon-user-solid'
+      }
+
+    ]
+  }
+  },
   props:{
   isCollapse:Boolean
   }
@@ -16,21 +32,18 @@ name: "MyAside",
       mode="vertical"
       default-active="/Home"
       :collapse="isCollapse"
-      :collapse-transition="false">
-  <el-menu-item index="/Home">
+      :collapse-transition="false"
+  router>
+  <el-menu-item index="/MyMain">
     <i class="el-icon-s-home"></i>
     <span slot="title">首页</span>
   </el-menu-item>
 
-    <el-menu-item index="/1">
-      <i class="el-icon-s-flag"></i>
-      <span slot="title">导航一</span>
+    <el-menu-item :index="'/'+item.menuClick" v-for="(item,i) in menu" :key="i">
+      <i class="item.menuIcon"></i>
+      <span slot="title">{{item.menuName}}}</span>
     </el-menu-item>
 
-    <el-menu-item index="/2">
-      <i class="el-icon-s-opportunity"></i>
-      <span slot="title">导航二</span>
-    </el-menu-item>
   </el-menu>
 </template>
 

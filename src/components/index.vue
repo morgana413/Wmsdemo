@@ -1,11 +1,11 @@
 <script>
 import MyAside from "@/components/MyAside.vue";
 import MyHeader from "@/components/MyHeader.vue";
-import MyMain from "@/components/MyMain.vue";
+
 
 export default {
   name: "IndexPage",
-  components: {MyAside, MyHeader, MyMain},
+  components: {MyAside, MyHeader},
   data() {
     return {
       isCollapse: false,
@@ -41,7 +41,7 @@ export default {
       </el-header>
 
       <el-main style="height: 100%;">
-          <MyMain></MyMain>
+        <router-view/>
       </el-main>
     </el-container>
   </el-container>
