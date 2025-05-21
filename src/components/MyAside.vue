@@ -3,7 +3,7 @@ export default {
 name: "MyAside",
   data(){
   return {
-    menu:[
+/*    menu:[
       {
         menuClick:'Admin',
         menuName:'管理员管理',
@@ -14,7 +14,14 @@ name: "MyAside",
         menuIcon:'el-icon-user-solid'
       }
 
-    ]
+    ]*/
+  }
+  },
+  computed:{
+  "menu":{
+    get(){
+      return this.$store.state.menu;
+    }
   }
   },
   props:{
@@ -40,8 +47,8 @@ name: "MyAside",
   </el-menu-item>
 
     <el-menu-item :index="'/'+item.menuClick" v-for="(item,i) in menu" :key="i">
-      <i class="item.menuIcon"></i>
-      <span slot="title">{{item.menuName}}}</span>
+      <i :class="item.menuIcon"></i>
+      <span slot="title">{{item.menuName}}</span>
     </el-menu-item>
 
   </el-menu>

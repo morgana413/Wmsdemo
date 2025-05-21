@@ -25,7 +25,7 @@ const routes = [
                 component: () => import('@/components/MyMain.vue')
             },
             {
-                path: '/Admin',
+                path: '/admin',
                 name: 'admin',
                 meta:{
                     title:'管理员管理'
@@ -33,7 +33,7 @@ const routes = [
                 component: () => import('../components/admin/AdminManage.vue')
             },
             {
-                path: '/User',
+                path: '/user',
                 name: 'user',
                 meta:{
                     title:'用户管理'
@@ -47,6 +47,12 @@ const router = new VueRouter({
     mode: 'history',
     routes
 })
+export function resetRouter() {
+    router.matcher = new VueRouter({
+        mode: 'history',
+        routes:[]
+    }).matcher
+}
 const VueRouterPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(to) {
     return VueRouterPush.call(this, to).catch(err =>err)
