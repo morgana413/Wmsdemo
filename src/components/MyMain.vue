@@ -91,8 +91,22 @@ name: "MyMain",
         this.form.no = row.no;
       })
     },
-    del(){
-
+    del(id){
+      this.$axios.get( this.$httpUrl+'/user/del?id='+id).then(res =>res.data).then(res => {
+        console.log(res)
+        this.tableData = res
+        if (res.code==200){
+          this.$message({
+            message: '操作成功！',
+            type: 'success'
+          });
+          this.loadPost()
+        }else
+          this.$message({
+            message: '操作失败',
+            type: 'error'
+          });
+      })
     },
     doSave(){
       this.$axios.post( this.$httpUrl+'/user/save',this.form).then(res =>res.data).then(res => {
@@ -247,7 +261,12 @@ name: "MyMain",
     <el-table-column prop="operate" label="操作" width="180">
       <template slot-scope="scope">
       <el-button size="small" type="success" @click="mod(scope.row)">编辑</el-button>
-      <el-button size="small" type="danger" @click="del">删除</el-button>
+        <el-popconfirm
+            title="确定删除吗？"
+            @confirm="del(scope.row.id)"
+        >
+          <el-button slot="reference" size="small" type="danger" style="margin-left: 5px">删除</el-button>
+        </el-popconfirm>
         </template>
     </el-table-column>
   </el-table>
