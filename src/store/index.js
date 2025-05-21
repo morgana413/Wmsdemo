@@ -4,25 +4,20 @@ import router from "../router";
 vue.use(Vuex)
 
 function addNewRoute(menuList) {
-    console.log(menuList)
-    let routes = router.options.routes;
-    console.log(routes);
-    routes.forEach(routeItem => {
-        if (routeItem.path == "/Index"){
-            menuList.forEach(menu => {
-                let childrenRoute ={
-                    path: '/'+menu.menuClick,
-                    name: menu.menuName,
-                    meta:{
-                        title:menu.menuName
-                    },
-                    component: () => import('../components/'+menu.menuComponent)
-                }
-                routeItem.children.push(childrenRoute)
-            })
-        }
+    // 清空旧路由（避免重复添加）
+    const parentRoute = router.options.routes.find(r => r.path.toLowerCase() === '/index')
+    if (parentRoute) parentRoute.children = []
+
+    // 动态注册新路由
+    menuList.forEach(menu => {
+        router.addRoute('index', { // 父路由的name
+            path: `/${menu.menuClick.toLowerCase()}`,
+            name: menu.menuClick,
+            meta: { title: menu.menuName },
+            component: () => import(`@/components/${menu.menuComponent}`)
+        })
     })
-    router.addRoutes(routes)
+
 }
 
 export default new Vuex.Store({

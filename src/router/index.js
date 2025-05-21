@@ -39,6 +39,12 @@ const routes = [
                     title:'用户管理'
                 },
                 component: () => import('../components/user/UserManage.vue')
+            },
+            {
+                path: '/test',
+                name: 'TestDemo',
+                meta: { title: '测试页' },
+                component: () => import('@/components/user/TestDemo.vue')
             }
         ]
     }
