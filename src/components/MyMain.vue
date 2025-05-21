@@ -38,6 +38,7 @@ name: "MyMain",
       ],
       centerDialogVisible: false,
       form: {
+        id:'',
         name: '',
         phone: '',
         sex: '',
@@ -77,25 +78,68 @@ name: "MyMain",
     resetForm() {
       this.$refs.form.resetFields();
     },
-  save(){
+    mod(row){
+      this.centerDialogVisible = true
+      this.$nextTick(() => {
+        this.form.id = row.id;
+        this.form.name = row.name;
+        this.form.phone = row.phone;
+        this.form.age = row.age+'';
+        this.form.roleId = row.roleId;
+        this.form.password = row.password;
+        this.form.sex = row.sex+'';
+        this.form.no = row.no;
+      })
+    },
+    del(){
+
+    },
+    doSave(){
+      this.$axios.post( this.$httpUrl+'/user/save',this.form).then(res =>res.data).then(res => {
+        console.log(res)
+        this.tableData = res
+        if (res.code==200){
+          this.$message({
+            message: '操作成功！',
+            type: 'success'
+          });
+          this.centerDialogVisible = false
+          this.loadPost()
+          this.resetForm()
+        }else
+          this.$message({
+            message: '操作失败',
+            type: 'error'
+          });
+      })
+    },
+    doMod(){
+      this.$axios.post( this.$httpUrl+'/user/update',this.form).then(res =>res.data).then(res => {
+        console.log(res)
+        this.tableData = res
+        if (res.code==200){
+          this.$message({
+            message: '操作成功！',
+            type: 'success'
+          });
+          this.centerDialogVisible = false
+          this.loadPost()
+          this.resetForm()
+        }else
+          this.$message({
+            message: '操作失败',
+            type: 'error'
+          });
+      })
+    },
+    save(){
       this.$refs.form.validate((valid) => {
         if (valid) {
-          this.$axios.post( this.$httpUrl+'/user/save',this.form).then(res =>res.data).then((res) => {
-            console.log(res)
-            this.tableData = res
-            if (res.code==200){
-              this.$message({
-                message: '操作成功！',
-                type: 'success'
-              });
-              this.centerDialogVisible = false
-              this.loadPost()
-            }else
-              this.$message({
-                message: '操作失败',
-                type: 'error'
-              });
-          })
+          if (this.form.id){
+            this.doMod();
+          }else{
+            this.doSave();
+          }
         } else {
           console.log('error submit!!');
           return false;
@@ -201,8 +245,10 @@ name: "MyMain",
       </template>
     </el-table-column>
     <el-table-column prop="operate" label="操作" width="180">
-      <el-button size="small" type="success">编辑</el-button>
-      <el-button size="small" type="danger">删除</el-button>
+      <template slot-scope="scope">
+      <el-button size="small" type="success" @click="mod(scope.row)">编辑</el-button>
+      <el-button size="small" type="danger" @click="del">删除</el-button>
+        </template>
     </el-table-column>
   </el-table>
     <el-pagination
