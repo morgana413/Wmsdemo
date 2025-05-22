@@ -5,7 +5,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import './assets/global.css';
 import axios from "axios";
 import VueRouter from "vue-router";
-import router from "./router";
+import router from "./router/router";
 import store from "./store";
 Vue.use(VueRouter);
 Vue.prototype.$axios = axios;

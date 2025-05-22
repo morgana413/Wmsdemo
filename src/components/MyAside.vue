@@ -37,20 +37,22 @@ name: "MyAside",
       active-text-color="#ffd04b"
       style="height: 120vh"
       mode="vertical"
-      default-active="/Home"
+      :default-active="$route.path"
       :collapse="isCollapse"
       :collapse-transition="false"
-  router>
+      router>
   <el-menu-item index="/MyMain">
     <i class="el-icon-s-home"></i>
     <span slot="title">首页</span>
   </el-menu-item>
 
-    <el-menu-item :index="'/'+item.menuClick" v-for="(item,i) in menu" :key="i">
+    <el-menu-item
+        v-for="(item,i) in menu"
+        :key="i"
+        :index="'/index/' + item.menuClick.toLowerCase()">
       <i :class="item.menuIcon"></i>
-      <span slot="title">{{item.menuName}}</span>
+      <span slot="title">{{ item.menuName }}</span>
     </el-menu-item>
-
   </el-menu>
 </template>
 

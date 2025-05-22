@@ -1,39 +1,51 @@
 import vue from 'vue'
 import Vuex from 'vuex'
-import router from "../router";
+import router from "../router/router";
 vue.use(Vuex)
 
 function addNewRoute(menuList) {
-    // 清空旧路由（避免重复添加）
-    const parentRoute = router.options.routes.find(r => r.path.toLowerCase() === '/index')
-    if (parentRoute) parentRoute.children = []
+    // 防御性处理
+    const safeMenuList = Array.isArray(menuList) ? menuList : []
 
-    // 动态注册新路由
-    menuList.forEach(menu => {
-        router.addRoute('index', { // 父路由的name
-            path: `/${menu.menuClick.toLowerCase()}`,
+    // 查找父路由
+    const parentRoute = router.options.routes.find(r => r.name.toLowerCase() === 'index')
+    if (!parentRoute) {
+        console.error('Parent route /index not found')
+        return
+    }
+
+    // 清空旧路由（保留非动态路由）
+    parentRoute.children = parentRoute.children.filter(r => !r.meta?.isDynamic)
+
+    // 添加新路由
+    safeMenuList.forEach(menu => {
+        if (!menu.menuClick || !menu.menuComponent) {
+            console.warn('Skipping invalid menu item:', menu)
+            return
+        }
+
+        const routeConfig = {
+            path: `${menu.menuClick.toLowerCase()}`,
             name: menu.menuClick,
-            meta: { title: menu.menuName },
+            meta: {
+                title: menu.menuName,
+                isDynamic: true // 标记为动态路由
+            },
             component: () => import(`@/components/${menu.menuComponent}`)
-        })
+        }
+
+        router.addRoute('index', routeConfig)
     })
 
+    console.log('Updated routes:', router.getRoutes())
 }
 
 export default new Vuex.Store({
-    state:{
-        menu:[]
-    },
-    mutations:{
-        setMenu(state,menuList){
-            state.menu = menuList
-
-            addNewRoute(menuList)
-        }
-    },
-    getters:{
-        getMenu(state){
-            return state.menu
+    mutations: {
+        setMenu(state, menuList) {
+            const validMenu = Array.isArray(menuList) ? menuList : []
+            state.menu = validMenu
+            addNewRoute(validMenu)
         }
     }
 })
