@@ -1,60 +1,90 @@
 <script>
+import SelectUser from "@/components/user/SelectUser.vue";
 export default {
   name: "GoodsManage",
+  components: {SelectUser},
   data() {
     let checkCount = (rule, value, callback) => {
       if (value > 9999) {
         callback(new Error('数量输入过大'));
-      }else{
+      } else {
         callback()
       }
     };
     return {
-      goodstypeData:[],
-      storageData:[],
+      user:JSON.parse(sessionStorage.getItem("CurUser")),
+      goodstypeData: [],
+      storageData: [],
       tableData: [],
-      storage:'',
-      goodstype:'',
+      storage: '',
+      goodstype: '',
       pageNum: 1,
       pageSize: 5,
       total: 0,
       name: '',
       centerDialogVisible: false,
+      inDialogVisible: false,
+      innerVisible: false,
+      currentRow:{},
+      tempUser:{},
       form: {
-        id:'',
+        id: '',
         name: '',
-        storage:'',
-        goodsType:'',
-        count:'',
+        storage: '',
+        goodsType: '',
+        count: '',
         remark: ''
       },
+      form1:{
+        goods:'',
+        goodsname:'',
+        count:'',
+        userId:'',
+        username:'',
+        adminId:'',
+        remark:'',
+        action:'1',
+      },
+      rules1:{},
       rules: {
         name: [
-          {required: true, message: '请输入物品名', trigger: 'blur'},
+          { required: true, message: '请输入物品名', trigger: 'blur' },
         ],
         storage: [
-          {required: true, message: '请选择仓库', trigger: 'blur'},
+          { required: true, message: '请选择仓库', trigger: 'blur' },
         ],
         goodsType: [
-          {required: true, message: '请选择种类', trigger: 'blur'},
+          { required: true, message: '请选择种类', trigger: 'blur' },
         ],
-        count:[
-          {required: true, message: '请输入数量', trigger: 'blur'},
-          {pattern:/^([1-9][0-9]*){1,4}$/,message: '数量必须为正整数', trigger: 'blur'},
-          {validator:checkCount,trigger:'blur'}
+        count: [
+          { required: true, message: '请输入数量', trigger: 'blur' },
+          { pattern: /^([1-9][0-9]*){1,4}$/, message: '数量必须为正整数', trigger: 'blur' },
+          { validator: checkCount, trigger: 'blur' }
         ]
       }
     }
   },
   methods: {
-    formatStorage(row){
-      let temp = this.storageData.find(item=>{
+    doSelectUser(val) {
+    console.log(val)
+      this.tempUser = val
+    },
+    confirmUser(){
+    this.form1.userId = this.tempUser.id;
+    this.form1.username = this.tempUser.name;
+    this.innerVisible = false;
+    },
+    selectUser(){
+    this.innerVisible = true;
+    },
+    formatStorage(row) {
+      let temp = this.storageData.find(item => {
         return item.id == row.storage;
       })
       return temp && temp.name;
     },
-    formatGoodsType(row){
-      let temp = this.goodstypeData.find(item=>{
+    formatGoodsType(row) {
+      let temp = this.goodstypeData.find(item => {
         return item.id == row.goodsType;
       })
       return temp && temp.name;
@@ -62,7 +92,10 @@ export default {
     resetForm() {
       this.$refs.form.resetFields();
     },
-    mod(row){
+    resetInForm(){
+      this.$refs.form1.resetFields();
+    },
+    mod(row) {
       this.centerDialogVisible = true
       this.$nextTick(() => {
         this.form.id = row.id;
@@ -73,47 +106,28 @@ export default {
         this.form.remark = row.remark;
       })
     },
-    del(id){
-      this.$axios.get( this.$httpUrl+'/goods/del?id='+id).then(res =>res.data).then(res => {
+    del(id) {
+      this.$axios.get(this.$httpUrl + '/goods/del?id=' + id).then(res => res.data).then(res => {
         console.log(res)
         this.tableData = res
-        if (res.code==200){
+        if (res.code == 200) {
           this.$message({
             message: '操作成功！',
             type: 'success'
           });
           this.loadPost()
-        }else
+        } else
           this.$message({
             message: '操作失败',
             type: 'error'
           });
       })
     },
-    doSave(){
-      this.$axios.post( this.$httpUrl+'/goods/save',this.form).then(res =>res.data).then(res => {
+    doSave() {
+      this.$axios.post(this.$httpUrl + '/goods/save', this.form).then(res => res.data).then(res => {
         console.log(res)
         this.tableData = res
-        if (res.code==200){
-          this.$message({
-            message: '操作成功！',
-            type: 'success'
-          });
-          this.centerDialogVisible = false
-          this.loadPost()
-          this.resetForm()
-        }else
-          this.$message({
-            message: '操作失败',
-            type: 'error'
-          });
-      })
-    },
-    doMod(){
-      this.$axios.post( this.$httpUrl+'/goods/update',this.form).then(res =>res.data).then(res => {
-        console.log(res)
-        this.tableData = res
-        if (res.code==200){
+        if (res.code == 200) {
           this.$message({
             message: '操作成功！',
             type: 'success'
@@ -121,19 +135,57 @@ export default {
           this.centerDialogVisible = false
           this.loadPost()
           this.resetForm()
-        }else
+        } else
           this.$message({
             message: '操作失败',
             type: 'error'
           });
       })
     },
-    save(){
+    doinGoods() {
+      this.$axios.post(this.$httpUrl + '/record/save', this.form1).then(res => res.data).then(res => {
+        console.log(res)
+        this.tableData = res
+        if (res.code == 200) {
+          this.$message({
+            message: '操作成功！',
+            type: 'success'
+          });
+          this.inDialogVisible = false
+          this.loadPost()
+          this.resetInForm()
+        } else
+          this.$message({
+            message: '操作失败',
+            type: 'error'
+          });
+      })
+    },
+    doMod() {
+      this.$axios.post(this.$httpUrl + '/goods/update', this.form).then(res => res.data).then(res => {
+        console.log(res)
+        this.tableData = res
+        if (res.code == 200) {
+          this.$message({
+            message: '操作成功！',
+            type: 'success'
+          });
+          this.centerDialogVisible = false
+          this.loadPost()
+          this.resetForm()
+        } else
+          this.$message({
+            message: '操作失败',
+            type: 'error'
+          });
+      })
+    },
+    save() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          if (this.form.id){
+          if (this.form.id) {
             this.doMod();
-          }else{
+          } else {
             this.doSave();
           }
         } else {
@@ -142,17 +194,45 @@ export default {
         }
       });
     },
-    add(){
+    inGoods() {
+      if (!this.currentRow.id) {
+        alert('请选择商品');
+        return;
+      }
+      this.inDialogVisible = true
+      this.$nextTick(() => {
+        this.resetInForm()
+      })
+      this.form1.goodsname = this.currentRow.name;
+      this.form1.goods = this.currentRow.id;
+      this.form1.adminId = this.user.id;
+      this.form1.action ='1';
+    },
+    outGoods() {
+      if (!this.currentRow.id) {
+        alert('请选择商品');
+        return;
+      }
+      this.inDialogVisible = true
+      this.$nextTick(() => {
+        this.resetInForm()
+      })
+      this.form1.goodsname = this.currentRow.name;
+      this.form1.goods = this.currentRow.id;
+      this.form1.adminId = this.user.id;
+      this.form1.action ='2';
+    },
+    add() {
       this.centerDialogVisible = true
-      this.$nextTick(()=>{
+      this.$nextTick(() => {
         this.resetForm()
-        this.form.id=''
+        this.form.id = ''
       })
     },
-    resetParam(){
-      this.name=''
-      this.storage=''
-      this.goodstype=''
+    resetParam() {
+      this.name = ''
+      this.storage = ''
+      this.goodstype = ''
       this.loadPost()
     },
     handleSizeChange(val) {
@@ -161,57 +241,59 @@ export default {
       this.pageSize = val;
       this.loadPost()
     },
+    selectCurrentChange(val) {
+      this.currentRow = val;
+    },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       this.pageNum = val;
       this.loadPost()
     },
-    loadPost(){
-      this.$axios.post( this.$httpUrl+'/goods/listPage',{
-        pageNum:this.pageNum,
-        pageSize:this.pageSize,
-        param:{
-          name:this.name,
-          goodstype:this.goodstype+'',
-          storage:this.storage+''
+    loadPost() {
+      this.$axios.post(this.$httpUrl + '/goods/listPage', {
+        pageNum: this.pageNum,
+        pageSize: this.pageSize,
+        param: {
+          name: this.name,
+          goodstype: this.goodstype + '',
+          storage: this.storage + ''
         }
-      }).then(res =>res.data).then((res) => {
+      }).then(res => res.data).then((res) => {
         console.log(res)
         this.tableData = res
-        if (res.code==200){
+        if (res.code == 200) {
           this.tableData = res.data
           this.total = res.total
-        }else
+        } else
           alert('获取数据失败')
       })
     },
-    loadStorage(){
-      this.$axios.get( this.$httpUrl+'/storage/list').then(res =>res.data).then((res) => {
+    loadStorage() {
+      this.$axios.get(this.$httpUrl + '/storage/list').then(res => res.data).then((res) => {
         console.log(res)
-        if (res.code==200){
+        if (res.code == 200) {
           this.storageData = res.data
-        }else
+        } else
           alert('获取数据失败')
       })
     },
-    loadGoodsType(){
-      this.$axios.get( this.$httpUrl+'/goodstype/list').then(res =>res.data).then((res) => {
+    loadGoodsType() {
+      this.$axios.get(this.$httpUrl + '/goodstype/list').then(res => res.data).then((res) => {
         console.log(res)
-        if (res.code==200){
+        if (res.code == 200) {
           this.goodstypeData = res.data
-        }else
+        } else
           alert('获取数据失败')
       })
     }
   },
-  beforeMount(){
+  beforeMount() {
     this.loadPost()
     this.loadStorage()
     this.loadGoodsType()
   }
 }
 </script>
-
 <template>
   <div>
     <div style="margin-bottom: 5px">
@@ -236,10 +318,14 @@ export default {
       <el-button type="primary" style="margin-left: 5px" @click="loadPost">查询</el-button>
       <el-button type="success" @click="resetParam">重置</el-button>
       <el-button type="warning" @click="add">新增</el-button>
+      <el-button type="warning" @click="inGoods">入库</el-button>
+      <el-button type="warning" @click="outGoods">出库</el-button>
     </div>
     <el-table :data="tableData"
               :header-cell-style="{background: '#2fddfa'}"
               border
+              highlight-current-row
+              @current-change="selectCurrentChange"
     >
       <el-table-column prop="id" label="ID" width="60">
       </el-table-column>
@@ -248,9 +334,9 @@ export default {
       <el-table-column prop="storage" label="仓库" width="180" :formatter="formatStorage">
       </el-table-column>
       <el-table-column prop="goodsType" label="分类" width="180" :formatter="formatGoodsType">
-    </el-table-column>
+      </el-table-column>
       <el-table-column prop="count" label="数量" width="180">
-    </el-table-column>
+      </el-table-column>
       <el-table-column prop="remark" label="备注" width="180">
       </el-table-column>
       <el-table-column prop="operate" label="操作" width="180">
@@ -320,6 +406,45 @@ export default {
       <span slot="footer" class="dialog-footer">
     <el-button @click="centerDialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="save">确 定</el-button>
+  </span>
+    </el-dialog>
+    <el-dialog
+        title="出入库"
+        :visible.sync="inDialogVisible"
+        width="30%"
+        center>
+      <el-dialog
+          width="90%"
+          title="用户选择"
+          :visible.sync="innerVisible"
+          append-to-body>
+        <SelectUser @doSelectUser="doSelectUser"></SelectUser>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="innerVisible = false">取 消</el-button>
+    <el-button type="primary" @click="confirmUser">确 定</el-button>
+  </span>
+      </el-dialog>
+      <el-form ref="form1" :rules="rules1" :model="form1" label-width="80px">
+        <el-form-item label="物品名" prop="name">
+          <el-col :span="20"><el-input v-model="form1.goodsname" readonly></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="申请人" prop="name">
+          <el-col :span="20"><el-input v-model="form1.username" readonly @click.native="selectUser"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="数量" prop="count">
+          <el-col :span="20"><el-input v-model="form1.count"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-col :span="20"><el-input type="textarea" v-model="form1.remark"></el-input>
+          </el-col>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="inDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="doinGoods">确 定</el-button>
   </span>
     </el-dialog>
   </div>
