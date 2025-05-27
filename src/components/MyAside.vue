@@ -3,18 +3,6 @@ export default {
 name: "MyAside",
   data(){
   return {
-/*    menu:[
-      {
-        menuClick:'Admin',
-        menuName:'管理员管理',
-        menuIcon:'el-icon-s-custom'
-      },{
-        menuClick:'User',
-        menuName:'用户管理',
-        menuIcon:'el-icon-user-solid'
-      }
-
-    ]*/
   }
   },
   computed:{

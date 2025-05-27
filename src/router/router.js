@@ -46,6 +46,22 @@ const routes = [
                 component: () => import('../components/user/UserManage.vue')
             },
             {
+                path: '/storage',
+                name: 'storage',
+                meta:{
+                    title:'仓库管理'
+                },
+                component: () => import('../components/storage/StorageManage.vue')
+            },
+            {
+                path: '/goodstype',
+                name: 'goodstype',
+                meta:{
+                    title:'物品分类管理'
+                },
+                component: () => import('../components/goodstype/goodstypeManage.vue')
+            },
+            {
                 path: '/test',
                 name: 'TestDemo',
                 meta: { title: '测试页' },
