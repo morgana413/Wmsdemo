@@ -18,10 +18,8 @@ name: "MyAside",
   }
   },
   computed:{
-  "menu":{
-    get(){
-      return this.$store.state.menu;
-    }
+  "menu"() {
+    return this.$store.state.menu;
   }
   },
   props:{
@@ -41,15 +39,10 @@ name: "MyAside",
       :collapse="isCollapse"
       :collapse-transition="false"
       router>
-  <el-menu-item index="/MyMain">
-    <i class="el-icon-s-home"></i>
-    <span slot="title">首页</span>
-  </el-menu-item>
-
     <el-menu-item
         v-for="(item,i) in menu"
         :key="i"
-        :index="'/index/' + item.menuClick.toLowerCase()">
+        :index="item.menuClick">
       <i :class="item.menuIcon"></i>
       <span slot="title">{{ item.menuName }}</span>
     </el-menu-item>

@@ -1,5 +1,7 @@
 import VueRouter from 'vue-router';
 
+import store from '../store/store';
+
 const routes = [
     {
         path: '/',
@@ -15,13 +17,16 @@ const routes = [
                 path: '/Home',
                 name: 'home',
                 meta:{
-                    title:'首页'
+                    title:'个人首页'
                 },
                 component: () => import('../components/MyHome.vue')
             },
             {
                 path: '/MyMain',
                 name: 'main',
+                meta:{
+                    title:'首页'
+                },
                 component: () => import('@/components/MyMain.vue')
             },
             {
@@ -63,4 +68,17 @@ const VueRouterPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(to) {
     return VueRouterPush.call(this, to).catch(err =>err)
 }
+
+store.commit('setMenu', routes.reduce((res, route) => {
+    if (Array.isArray(route.children)) {
+        res.push(...route.children.map(item => {
+            return {
+                menuName: item.meta && item.meta.title,
+                menuClick: item.path
+            }
+        }))
+    }
+    return res
+}, []))
+
 export default router;

@@ -6,7 +6,7 @@ import './assets/global.css';
 import axios from "axios";
 import VueRouter from "vue-router";
 import router from "./router/router";
-import store from "./store";
+import store from "./store/store";
 Vue.use(VueRouter);
 Vue.prototype.$axios = axios;
 Vue.prototype.$httpUrl = 'http://localhost:8090';

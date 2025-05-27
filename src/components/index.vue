@@ -15,7 +15,6 @@ export default {
   },
   methods: {
     doCollapse() {
-      console.log(1111)
       this.isCollapse = !this.isCollapse;
       if (!this.isCollapse) {
         this.icon='el-icon-s-fold'

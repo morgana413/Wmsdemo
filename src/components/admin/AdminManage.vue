@@ -13,7 +13,7 @@ export default {
       if(this.form.id){
         return callback();
       }
-      this.$axios.get("http://localhost:8090/user/findByNo?no="+this.form.no).then(res=>res.data).then(res => {
+      this.$axios.get("http://localhost:8090/admin/findByNo?no="+this.form.no).then(res=>res.data).then(res => {
         if(res.code !=200){
           callback();
         }else{
@@ -92,7 +92,7 @@ export default {
       })
     },
     del(id){
-      this.$axios.get( this.$httpUrl+'/user/del?id='+id).then(res =>res.data).then(res => {
+      this.$axios.get( this.$httpUrl+'/admin /del?id='+id).then(res =>res.data).then(res => {
         console.log(res)
         this.tableData = res
         if (res.code==200){
@@ -109,7 +109,7 @@ export default {
       })
     },
     doSave(){
-      this.$axios.post( this.$httpUrl+'/user/save',this.form).then(res =>res.data).then(res => {
+      this.$axios.post( this.$httpUrl+'/admin/save',this.form).then(res =>res.data).then(res => {
         console.log(res)
         this.tableData = res
         if (res.code==200){
@@ -128,7 +128,7 @@ export default {
       })
     },
     doMod(){
-      this.$axios.post( this.$httpUrl+'/user/update',this.form).then(res =>res.data).then(res => {
+      this.$axios.post( this.$httpUrl+'/admin/update',this.form).then(res =>res.data).then(res => {
         console.log(res)
         this.tableData = res
         if (res.code==200){
@@ -183,12 +183,12 @@ export default {
       this.loadPost()
     },
     loadGet() {
-      this.$axios.get(this.$httpUrl+'/user/list').then(res =>res.data).then((res) => {
+      this.$axios.get(this.$httpUrl+'/admin/list').then(res =>res.data).then((res) => {
         console.log(res)
       })
     },
     loadPost(){
-      this.$axios.post( this.$httpUrl+'/user/listPageC1',{
+      this.$axios.post( this.$httpUrl+'/admin/listPageC1',{
         pageNum:this.pageNum,
         pageSize:this.pageSize,
         param:{
