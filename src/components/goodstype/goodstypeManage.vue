@@ -189,7 +189,7 @@ export default {
         :total="total">
     </el-pagination>
     <el-dialog
-        title="提示"
+        title="新增"
         :visible.sync="centerDialogVisible"
         width="30%"
         center>

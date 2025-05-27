@@ -10,7 +10,11 @@ export default {
       }
     };
     return {
+      goodstypeData:[],
+      storageData:[],
       tableData: [],
+      storage:'',
+      goodstype:'',
       pageNum: 1,
       pageSize: 5,
       total: 0,
@@ -28,6 +32,12 @@ export default {
         name: [
           {required: true, message: '请输入物品名', trigger: 'blur'},
         ],
+        storage: [
+          {required: true, message: '请选择仓库', trigger: 'blur'},
+        ],
+        goodsType: [
+          {required: true, message: '请选择种类', trigger: 'blur'},
+        ],
         count:[
           {required: true, message: '请输入数量', trigger: 'blur'},
           {pattern:/^([1-9][0-9]*){1,4}$/,message: '数量必须为正整数', trigger: 'blur'},
@@ -37,6 +47,18 @@ export default {
     }
   },
   methods: {
+    formatStorage(row){
+      let temp = this.storageData.find(item=>{
+        return item.id == row.storage;
+      })
+      return temp && temp.name;
+    },
+    formatGoodsType(row){
+      let temp = this.goodstypeData.find(item=>{
+        return item.id == row.goodsType;
+      })
+      return temp && temp.name;
+    },
     resetForm() {
       this.$refs.form.resetFields();
     },
@@ -129,6 +151,8 @@ export default {
     },
     resetParam(){
       this.name=''
+      this.storage=''
+      this.goodstype=''
       this.loadPost()
     },
     handleSizeChange(val) {
@@ -148,7 +172,8 @@ export default {
         pageSize:this.pageSize,
         param:{
           name:this.name,
-          roleId:1
+          goodstype:this.goodstype+'',
+          storage:this.storage+''
         }
       }).then(res =>res.data).then((res) => {
         console.log(res)
@@ -159,10 +184,30 @@ export default {
         }else
           alert('获取数据失败')
       })
+    },
+    loadStorage(){
+      this.$axios.get( this.$httpUrl+'/storage/list').then(res =>res.data).then((res) => {
+        console.log(res)
+        if (res.code==200){
+          this.storageData = res.data
+        }else
+          alert('获取数据失败')
+      })
+    },
+    loadGoodsType(){
+      this.$axios.get( this.$httpUrl+'/goodstype/list').then(res =>res.data).then((res) => {
+        console.log(res)
+        if (res.code==200){
+          this.goodstypeData = res.data
+        }else
+          alert('获取数据失败')
+      })
     }
   },
-  beforeMount() {
-    this.loadPost();
+  beforeMount(){
+    this.loadPost()
+    this.loadStorage()
+    this.loadGoodsType()
   }
 }
 </script>
@@ -172,6 +217,22 @@ export default {
     <div style="margin-bottom: 5px">
       <el-input v-model="name" placeholder="请输入物品名" suffix-icon="el-icon-search" style="width: 200px"
                 @keyup.enter.native="loadPost"></el-input>
+      <el-select v-model="storage" placeholder="请选择仓库" style="margin-left: 5px">
+        <el-option
+            v-for="item in storageData"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+        </el-option>
+      </el-select>
+      <el-select v-model="goodstype" placeholder="请选择商品种类" style="margin-left: 5px">
+        <el-option
+            v-for="item in goodstypeData"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+        </el-option>
+      </el-select>
       <el-button type="primary" style="margin-left: 5px" @click="loadPost">查询</el-button>
       <el-button type="success" @click="resetParam">重置</el-button>
       <el-button type="warning" @click="add">新增</el-button>
@@ -184,9 +245,9 @@ export default {
       </el-table-column>
       <el-table-column prop="name" label="物品名" width="180">
       </el-table-column>
-      <el-table-column prop="storage" label="仓库" width="180">
+      <el-table-column prop="storage" label="仓库" width="180" :formatter="formatStorage">
       </el-table-column>
-      <el-table-column prop="goodsType" label="分类" width="180">
+      <el-table-column prop="goodsType" label="分类" width="180" :formatter="formatGoodsType">
     </el-table-column>
       <el-table-column prop="count" label="数量" width="180">
     </el-table-column>
@@ -214,7 +275,7 @@ export default {
         :total="total">
     </el-pagination>
     <el-dialog
-        title="提示"
+        title="新增"
         :visible.sync="centerDialogVisible"
         width="30%"
         center>
@@ -224,11 +285,27 @@ export default {
           </el-col>
         </el-form-item>
         <el-form-item label="仓库" prop="storage">
-          <el-col :span="20"><el-input v-model="form.storage"></el-input>
+          <el-col :span="20">
+            <el-select v-model="form.name" placeholder="请选择仓库" style="margin-left: 5px">
+              <el-option
+                  v-for="item in storageData"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+              </el-option>
+            </el-select>
           </el-col>
         </el-form-item>
         <el-form-item label="分类" prop="goodsType">
-          <el-col :span="20"><el-input v-model="form.goodsType"></el-input>
+          <el-col :span="20">
+            <el-select v-model="form.goodstype" placeholder="请选择商品种类" style="margin-left: 5px">
+              <el-option
+                  v-for="item in goodstypeData"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+              </el-option>
+            </el-select>
           </el-col>
         </el-form-item>
         <el-form-item label="数量" prop="count">
