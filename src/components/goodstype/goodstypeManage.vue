@@ -16,8 +16,7 @@ export default {
       },
       rules: {
         name: [
-          {required: true, message: '请输入名字', trigger: 'blur'},
-          {min: 3, max: 8, message: '长度在 3 到 8 个字符', trigger: 'blur'}
+          {required: true, message: '请输入分类名', trigger: 'blur'},
         ]
       }
     }

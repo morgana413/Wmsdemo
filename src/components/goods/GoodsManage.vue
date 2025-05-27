@@ -1,7 +1,14 @@
 <script>
 export default {
-  name: "StorageManage",
+  name: "GoodsManage",
   data() {
+    let checkCount = (rule, value, callback) => {
+      if (value > 9999) {
+        callback(new Error('数量输入过大'));
+      }else{
+        callback()
+      }
+    };
     return {
       tableData: [],
       pageNum: 1,
@@ -12,11 +19,19 @@ export default {
       form: {
         id:'',
         name: '',
+        storage:'',
+        goodsType:'',
+        count:'',
         remark: ''
       },
       rules: {
         name: [
-          {required: true, message: '请输入仓库', trigger: 'blur'},
+          {required: true, message: '请输入物品名', trigger: 'blur'},
+        ],
+        count:[
+          {required: true, message: '请输入数量', trigger: 'blur'},
+          {pattern:/^([1-9][0-9]*){1,4}$/,message: '数量必须为正整数', trigger: 'blur'},
+          {validator:checkCount,trigger:'blur'}
         ]
       }
     }
@@ -30,11 +45,14 @@ export default {
       this.$nextTick(() => {
         this.form.id = row.id;
         this.form.name = row.name;
+        this.form.count = row.count;
+        this.form.goodsType = row.goodsType;
+        this.form.storage = row.storage;
         this.form.remark = row.remark;
       })
     },
     del(id){
-      this.$axios.get( this.$httpUrl+'/storage/del?id='+id).then(res =>res.data).then(res => {
+      this.$axios.get( this.$httpUrl+'/goods/del?id='+id).then(res =>res.data).then(res => {
         console.log(res)
         this.tableData = res
         if (res.code==200){
@@ -51,7 +69,7 @@ export default {
       })
     },
     doSave(){
-      this.$axios.post( this.$httpUrl+'/storage/save',this.form).then(res =>res.data).then(res => {
+      this.$axios.post( this.$httpUrl+'/goods/save',this.form).then(res =>res.data).then(res => {
         console.log(res)
         this.tableData = res
         if (res.code==200){
@@ -70,7 +88,7 @@ export default {
       })
     },
     doMod(){
-      this.$axios.post( this.$httpUrl+'/storage/update',this.form).then(res =>res.data).then(res => {
+      this.$axios.post( this.$httpUrl+'/goods/update',this.form).then(res =>res.data).then(res => {
         console.log(res)
         this.tableData = res
         if (res.code==200){
@@ -106,6 +124,7 @@ export default {
       this.centerDialogVisible = true
       this.$nextTick(()=>{
         this.resetForm()
+        this.form.id=''
       })
     },
     resetParam(){
@@ -124,7 +143,7 @@ export default {
       this.loadPost()
     },
     loadPost(){
-      this.$axios.post( this.$httpUrl+'/storage/listPage',{
+      this.$axios.post( this.$httpUrl+'/goods/listPage',{
         pageNum:this.pageNum,
         pageSize:this.pageSize,
         param:{
@@ -151,7 +170,7 @@ export default {
 <template>
   <div>
     <div style="margin-bottom: 5px">
-      <el-input v-model="name" placeholder="请输入仓库名" suffix-icon="el-icon-search" style="width: 200px"
+      <el-input v-model="name" placeholder="请输入物品名" suffix-icon="el-icon-search" style="width: 200px"
                 @keyup.enter.native="loadPost"></el-input>
       <el-button type="primary" style="margin-left: 5px" @click="loadPost">查询</el-button>
       <el-button type="success" @click="resetParam">重置</el-button>
@@ -163,8 +182,14 @@ export default {
     >
       <el-table-column prop="id" label="ID" width="60">
       </el-table-column>
-      <el-table-column prop="name" label="仓库名" width="180">
+      <el-table-column prop="name" label="物品名" width="180">
       </el-table-column>
+      <el-table-column prop="storage" label="仓库" width="180">
+      </el-table-column>
+      <el-table-column prop="goodsType" label="分类" width="180">
+    </el-table-column>
+      <el-table-column prop="count" label="数量" width="180">
+    </el-table-column>
       <el-table-column prop="remark" label="备注" width="180">
       </el-table-column>
       <el-table-column prop="operate" label="操作" width="180">
@@ -194,8 +219,20 @@ export default {
         width="30%"
         center>
       <el-form ref="form" :rules="rules" :model="form" label-width="80px">
-        <el-form-item label="仓库名" prop="name">
+        <el-form-item label="物品名" prop="name">
           <el-col :span="20"><el-input v-model="form.name"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="仓库" prop="storage">
+          <el-col :span="20"><el-input v-model="form.storage"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="分类" prop="goodsType">
+          <el-col :span="20"><el-input v-model="form.goodsType"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="数量" prop="count">
+          <el-col :span="20"><el-input v-model="form.count"></el-input>
           </el-col>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
