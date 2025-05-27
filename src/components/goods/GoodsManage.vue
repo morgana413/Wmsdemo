@@ -317,9 +317,9 @@ export default {
       </el-select>
       <el-button type="primary" style="margin-left: 5px" @click="loadPost">查询</el-button>
       <el-button type="success" @click="resetParam">重置</el-button>
-      <el-button type="warning" @click="add">新增</el-button>
-      <el-button type="warning" @click="inGoods">入库</el-button>
-      <el-button type="warning" @click="outGoods">出库</el-button>
+      <el-button type="warning" @click="add" v-if="user.roleId!=2">新增</el-button>
+      <el-button type="warning" @click="inGoods" v-if="user.roleId!=2">入库</el-button>
+      <el-button type="warning" @click="outGoods" v-if="user.roleId!=2">出库</el-button>
     </div>
     <el-table :data="tableData"
               :header-cell-style="{background: '#2fddfa'}"
@@ -339,7 +339,7 @@ export default {
       </el-table-column>
       <el-table-column prop="remark" label="备注" width="180">
       </el-table-column>
-      <el-table-column prop="operate" label="操作" width="180">
+      <el-table-column prop="operate" label="操作" width="180" v-if="user.roleId!=2">
         <template slot-scope="scope">
           <el-button size="small" type="success" @click="mod(scope.row)">编辑</el-button>
           <el-popconfirm
