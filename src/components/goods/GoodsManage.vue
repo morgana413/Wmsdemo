@@ -286,7 +286,7 @@ export default {
         </el-form-item>
         <el-form-item label="仓库" prop="storage">
           <el-col :span="20">
-            <el-select v-model="form.name" placeholder="请选择仓库" style="margin-left: 5px">
+            <el-select v-model="form.storage" placeholder="请选择仓库" style="margin-left: 5px">
               <el-option
                   v-for="item in storageData"
                   :key="item.id"
@@ -298,7 +298,7 @@ export default {
         </el-form-item>
         <el-form-item label="分类" prop="goodsType">
           <el-col :span="20">
-            <el-select v-model="form.goodstype" placeholder="请选择商品种类" style="margin-left: 5px">
+            <el-select v-model="form.goodsType" placeholder="请选择商品种类" style="margin-left: 5px">
               <el-option
                   v-for="item in goodstypeData"
                   :key="item.id"

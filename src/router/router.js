@@ -70,6 +70,14 @@ const routes = [
                 component: () => import('../components/goods/GoodsManage.vue')
             },
             {
+                path: '/record',
+                name: 'record',
+                meta:{
+                    title:'操作记录'
+                },
+                component: () => import('../components/record/RecordManage.vue')
+            },
+            {
                 path: '/test',
                 name: 'TestDemo',
                 meta: { title: '测试页' },
